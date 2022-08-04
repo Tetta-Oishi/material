@@ -1,99 +1,97 @@
-# 学習ワークフロー ver. 0.2
+# シーケンス図(管理画面/チャット/学習)
 ```mermaid
 sequenceDiagram
     autonumber
-    actor admin as テナント管理者
+    participant frontmanagement as 管理画面
     participant back as back
-    participant argo as argo server
-    participant workflow as workflow
+    
+    participant frontchat as チャット画面
+    participant websoket as websoket
+    participant chat as chat
+    participant language as language-recognition
+    participant piimask as pii-mask
+    participant modules as modules
     participant job as job
-    participant queue as redis
+    participant redis as redis
+    
+    participant leaning as 学習
+    participant job as job
     participant crawling as crawling
-    admin ->> back: 学習開始
-    Note over back,argo: tenant<br/>help_id<br/>learning_id<br/>latest_flag<br/>crawling_max_pages<br/>completed_url_list<br/>completed_file_list<br/>scheduler_flg<br/>task_id
-    back ->> argo: 学習workflow開始
-    argo ->> workflow: params(<br/>tenant,help_id,learning_id,latest_flag,<br/>crawling_max_pages,<br/>completed_url_list,completed_file_list,<br/>scheduler_flag)
-    activate workflow
-    rect rgb(191, 223, 255)
-        Note over workflow: Step1 crawling環境準備
-        workflow ->> crawling: pod(with scaledobject)作成
-        activate crawling
-    end
-    rect rgb(191, 223, 255)
-        Note over workflow: Step2 crawling
-        workflow ->> job: params(<br/>learning_id,<br/>crawling_max_pages,<br/>completed_url_list,<br/>completed_file_list,<br/>scheduler_flag)
-        activate job
-        loop
-            job ->> queue: タスク登録
-        end
-        deactivate job
-    end
-    rect rgb(191, 223, 255)
-        Note over workflow: Step3 suspend
-        loop
-            crawling ->> queue: タスク取得
-            Note over crawling: 処理
-            crawling ->> queue: 結果
-        end
-        Note over crawling: タスク終了
-        crawling ->> argo: resume(learning_id)
-        argo ->> workflow: resume
-    end
-    par
-        rect rgb(191, 223, 255)
-            Note over workflow: Step4 crawling環境削除
-            workflow ->> crawling: pod(with scaleobject)削除
-            deactivate crawling
-        end
-    and
-        rect rgb(191, 223, 255)
-            Note over workflow: Step5 crawling後処理
-            workflow ->> job: params(<br/>learning_id,<br/>completed_url_list,<br/>completed_file_list,<br/>scheduler_flag)
-            activate job
-            Note over job: crawlingの後処理
-            job -->> workflow: result
-            deactivate job
-        end
-    end
-    rect rgb(191, 223, 255)
-        Note over workflow: Step6 学習
-        par
-            workflow ->> learning: train_task(learning_id,[tarining_step])
-            activate learning
-            Note left of learning: 形態素解析、モデル作成, etc
-            learning -->> workflow: outputs1
-            deactivate learning
-        and
-            workflow ->> learning: add_keywords_to_corpus(learning_id,[tarining_step])
-            activate learning
-            Note left of learning: キーワード抽出
-            learning -->> workflow: outputs2
-            deactivate learning
-        end
-        %% workflow ->> learning2: add_keywords_to_corpus
-        %% activate learning2
-        %% deactivate learning2
-    end
-    rect rgb(191, 223, 255)
-        Note over workflow: Step7 学習後処理
-        workflow ->> learning: on_chord_finished(learning_id, outputs1, outputs2)
-        activate learning
-        Note left of learning: DBのステータス更新
-        learning -->> workflow: result
-        deactivate learning
-        workflow ->> argo: Agent起動 workflow<br/>(tenant,help_id,learning_id,latest_flag)
-    end
-    alt 終了処理
-        rect rgb(191, 223, 255)
-            Note over workflow: Step8 通知
-            workflow ->> back: メール通知(learning_id)
-        end
-    else　例外時処理
-        rect rgb(191, 223, 255)
-            Note over workflow: onExit
-            workflow ->> back: メール通知(learning_id, any...)
-        end
-    end
-    deactivate workflow
-    back ->> admin: 学習結果メール通知
+    participant crawlingconvert as crawring-convert
+    participant learning as learning
+    participant modules as modules
+    
+    frontmanagement ->> back: 学習開始
+    frontmanagement ->> websoket: 学習開始
+    back ->> job: 学習workfllow開始
+    back ->> modules: 学習workfllow開始
+    back ->> piimask: 学習workfllow開始
+    back ->> language: 学習workfllow開始
+    job ->> redis: task登録
+    
+
 ```
+```mermaid
+sequenceDiagram
+    autonumber
+    participant frontmanagement as 管理画面
+    participant back as back
+    
+    participant frontchat as チャット画面
+    participant websoket as websoket
+    participant chat as chat
+    
+    participant leaning as 学習
+    participant job as job
+    participant crawling as crawling
+    participant crawlingconvert as crawring-convert
+    participant learning as learning
+    participant modules as modules
+
+    participant language as language-recognition
+    participant piimask as pii-mask
+    participant modules as modules
+    participant job as job
+    participant redis as redis
+
+    frontchat ->> back: 学習開始
+    frontchat ->> websoket: 学習開始
+    websoket ->> chat: 学習workfllow開始
+    websoket ->> redis: 学習workfllow開始
+    websoket ->> piimask: 学習workfllow開始
+    websoket ->> language: 学習workfllow開始
+    
+
+```
+```mermaid
+sequenceDiagram
+    autonumber
+    participant frontmanagement as 管理画面
+    participant back as back
+    
+    participant frontchat as チャット画面
+    participant websoket as websoket
+    participant chat as chat
+    participant language as language-recognition
+    participant piimask as pii-mask
+    participant modules as modules
+    participant job as job
+    participant redis as redis
+    
+    participant leaning as 学習
+    participant job as job
+    participant crawling as crawling
+    participant crawlingconvert as crawring-convert
+    participant learning as learning
+    participant modules as modules
+    
+    job ->> redis: 学習開始
+    crawling ->> redis: 学習開始
+    crawlingconvert ->> redis: 学習workfllow開始
+    learning ->> redis: 学習workfllow開始
+    modules ->> redis: 学習workfllow開始
+
+    
+
+```
+
