@@ -98,44 +98,44 @@ sequenceDiagram
     participant redis as redis
     
     job ->> karpenter: job実行
-    job ->> kedaoperator: job実行
-    job ->> kedaoperatormetricsapiserver: job実行
-    job ->> agentmonitoring: job実行
-    job ->> backchat: job実行
-    job ->> backlearning: job実行
-    job ->> cleanchat: job実行
-    job ->> crawlingapp: job実行
-    job ->> cutoffmail: job実行
-    job ->> checkchat: job実行
-    job ->> crawlingconvert: job実行
-    job ->> learnscheduler: job実行
-    job ->> opeserver: job実行
-    job ->> reportjob: job実行
-    job ->> updateplan: job実行
-    job ->> wakeup: job実行
-    job ->> internalingresscontroller: job実行
-    job ->> argoworkflowserver: job実行
-    job ->> argoworkflowcontroller: job実行
-
     karpenter ->> redis: task実行
+    job ->> kedaoperator: job実行
     kedaoperator ->> redis: task実行
+    job ->> kedaoperatormetricsapiserver: job実行
     kedaoperatormetricsapiserver ->> redis: task実行
+    job ->> agentmonitoring: job実行
     agentmonitoring ->> redis: task実行
+    job ->> backchat: job実行
     backchat ->> redis: task実行
+    job ->> backlearning: job実行
     backlearning ->> redis: task実行
+    job ->> cleanchat: job実行
     cleanchat ->> redis: task実行
+    job ->> crawlingapp: job実行
     crawlingapp ->> redis: task実行
+    job ->> cutoffmail: job実行
     cutoffmail ->> redis: task実行
+    job ->> checkchat: job実行
     checkchat ->> redis: task実行
+    job ->> crawlingconvert: job実行
     crawlingconvert ->> redis: task実行
+    job ->> learnscheduler: job実行
     learnscheduler ->> redis: task実行
+    job ->> opeserver: job実行
     opeserver ->> redis: task実行
+    job ->> reportjob: job実行
     reportjob ->> redis: task実行
+    job ->> updateplan: job実行
     updateplan ->> redis: task実行
+    job ->> wakeup: job実行
     wakeup ->> redis: task実行
+    job ->> internalingresscontroller: job実行
     internalingresscontroller ->> redis: task実行
+    job ->> argoworkflowserver: job実行
     argoworkflowserver ->> redis: task実行
+    job ->> argoworkflowcontroller: job実行
     argoworkflowcontroller ->> redis: task実行
+    
     
 ```
 ## task登録
