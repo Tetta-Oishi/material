@@ -66,7 +66,44 @@ sequenceDiagram
     
 
 ```
-## job実行
+## task登録
+```mermaid
+sequenceDiagram
+    autonumber
+    
+    participant job as job
+    participant crawling as crawling
+    participant crawlingconvert as crawring-convert
+    participant learning as learning
+    participant modules as modules
+    
+    job ->> redis: task登録
+    crawling ->> redis: task登録
+    crawlingconvert ->> redis: task登録
+    learning ->> redis: task登録
+    modules ->> redis: task登録
+
+    
+
+```
+## Cron実行
+```mermaid
+sequenceDiagram
+    autonumber
+    
+    participant Cronjob as Cronjob
+    participant back as back
+    participant job as job
+    
+    participant redis as redis
+    
+    Cronjob ->> back: 定期実行
+    back ->> job: job実行
+    job ->> redis: task登録
+    
+
+```
+## job実行(Cron実行含む)
 ```mermaid
 sequenceDiagram
     autonumber
@@ -137,41 +174,4 @@ sequenceDiagram
     argoworkflowcontroller ->> redis: task実行
     
     
-```
-## task登録
-```mermaid
-sequenceDiagram
-    autonumber
-    
-    participant job as job
-    participant crawling as crawling
-    participant crawlingconvert as crawring-convert
-    participant learning as learning
-    participant modules as modules
-    
-    job ->> redis: task登録
-    crawling ->> redis: task登録
-    crawlingconvert ->> redis: task登録
-    learning ->> redis: task登録
-    modules ->> redis: task登録
-
-    
-
-```
-## Cron実行
-```mermaid
-sequenceDiagram
-    autonumber
-    
-    participant Cronjob as Cronjob
-    participant back as back
-    participant job as job
-    
-    participant redis as redis
-    
-    Cronjob ->> back: 定期実行
-    back ->> job: job実行
-    job ->> redis: task登録
-    
-
 ```
